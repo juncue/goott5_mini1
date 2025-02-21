@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>관광지 상세 페이지</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+
+    <!-- Favicons -->
+    <link href="img/main/favicon.png" rel="icon" />
+    <link href="img/main/apple-touch-icon.png" rel="apple-touch-icon" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script
+      src="https://kit.fontawesome.com/9bef4b10f4.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a71a8751e5612ffa85926cc64a7631a5"
+    ></script>
+    <script
+      src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"
+      integrity="sha384-DKYJZ8NLiK8MN4/C5P2dtSmLQ4KwPaoqAfyA/DfmEc1VDxu4yyC7wy6K1Hs90nka"
+      crossorigin="anonymous"
+    ></script>
+    <script src="js/touristAttraction/common.js"></script>
+    <script src="js/touristAttraction/touristAttractionDetail.js"></script>
+
+    <!-- Vendor CSS Files -->
+    <link href="css/main/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/main/bootstrap-icons.css" rel="stylesheet" />
+    <link href="css/main/aos.css" rel="stylesheet" />
+    <link href="css/main/glightbox.min.css" rel="stylesheet" />
+
+    <!-- Main CSS File -->
+    <link href="css/main/main.css" rel="stylesheet" />
+    <link href="css/touristAttraction/touristAttraction.css" rel="stylesheet" />
+  </head>
+
+  <body class="index-page">
+    <!-- 헤더영역 -->
+    <header
+      id="header"
+      class="header d-flex align-items-center sticky-top"
+      style="height: 80px"
+    >
+      <div
+        class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between"
+      >
+        <a href="index.html" class="logo d-flex align-items-center">
+          <h1 class="sitename"><span>goott</span>Academy5</h1>
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li class="dropdown">
+              <a href="#"
+                ><span>Category</span> <i class="fa-solid fa-caret-down"></i
+              ></a>
+              <ul>
+                <li><a href="touristAttractionList.html">관광지</a></li>
+                <li><a href="cultureList.html">문화시설</a></li>
+                <li><a href="festivalList.html">축제공연행사</a></li>
+                <li><a href="travelList.html">여행코스</a></li>
+                <li><a href="leportsList.html">레포츠</a></li>
+                <li><a href="lodgmentList.html">숙박</a></li>
+                <li><a href="shoppingList.html">쇼핑</a></li>
+                <li><a href="restaurantList.html">음식점</a></li>
+                <li><a href="petList.html">반려동물</a></li>
+              </ul>
+            </li>
+          </ul>
+          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+      </div>
+    </header>
+
+    <!-- 본문영역 -->
+    <main class="main">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-5 detailTitleArea">
+            <p class="detailTitle">
+              <span id="detailTitle"></span>
+              <span class="detailLike" onclick="setLike(this);"
+                ><i class="fa-heart"></i
+              ></span>
+            </p>
+
+            <div
+              id="carouselExampleIndicators"
+              class="carousel slide"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-indicators"></div>
+              <div class="carousel-inner"></div>
+              <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-7 detailTabArea">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link active"
+                  id="overview-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#overview"
+                  type="button"
+                  role="tab"
+                  aria-controls="overview"
+                  aria-selected="true"
+                >
+                  개요
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="basicInfo-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#basicInfo"
+                  type="button"
+                  role="tab"
+                  aria-controls="basicInfo"
+                  aria-selected="false"
+                >
+                  기본 정보
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="notice-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#notice"
+                  type="button"
+                  role="tab"
+                  aria-controls="notice"
+                  aria-selected="false"
+                >
+                  이용 안내
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="detailInfo-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#detailInfo"
+                  type="button"
+                  role="tab"
+                  aria-controls="detailInfo"
+                  aria-selected="false"
+                >
+                  상세 정보
+                </button>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div
+                class="tab-pane fade show active"
+                id="overview"
+                role="tabpanel"
+                aria-labelledby="overview-tab"
+              ></div>
+              <div
+                class="tab-pane fade"
+                id="basicInfo"
+                role="tabpanel"
+                aria-labelledby="basicInfo-tab"
+              ></div>
+              <div
+                class="tab-pane fade"
+                id="notice"
+                role="tabpanel"
+                aria-labelledby="notice-tab"
+              ></div>
+              <div
+                class="tab-pane fade"
+                id="detailInfo"
+                role="tabpanel"
+                aria-labelledby="detailInfo-tab"
+              ></div>
+            </div>
+          </div>
+
+          <div class="mapArea">
+            <p class="mapTitle">찾아 가는 길</p>
+            <div id="map"></div>
+          </div>
+
+          <div class="btnArea">
+            <button
+              type="button"
+              id="kakaoBtn"
+              class="btn btn-warning btn-lg kakao-Btn"
+              onclick="shareMessage();"
+            >
+              <i class="fa-solid fa-comment"></i> &nbsp;카카오톡 공유
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary btn-lg list-Btn"
+              onclick="goBackListPage();"
+            >
+              목록
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 푸터영역 -->
+    <footer id="footer" class="footer">
+      <div class="container">
+        <div class="copyright text-center">
+          <p>
+            © <span>Copyright</span>
+            <strong class="px-1 sitename">goottAcademy5</strong>
+            <span>All Rights Reserved</span>
+          </p>
+        </div>
+
+        <div class="credits">
+          <!-- All the links in the footer should remain intact. -->
+          <!-- You can delete the links only if you've purchased the pro version. -->
+          <!-- Licensing information: https://bootstrapmade.com/license/ -->
+          <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scroll Top -->
+    <a
+      href="#"
+      id="scroll-top"
+      class="scroll-top d-flex align-items-center justify-content-center"
+      ><i class="fa-solid fa-arrow-up"></i
+    ></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="js/main/bootstrap.bundle.min.js"></script>
+    <script src="js/main/aos.js"></script>
+    <script src="js/main/glightbox.min.js"></script>
+
+    <!-- Main JS File -->
+    <script src="js/main/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,246 @@
+a {
+  text-decoration: none;
+}
+
+a:link {
+  color: #333;
+}
+
+a:visited {
+  color: #333;
+}
+
+a:hover {
+  color: #1ab394;
+}
+
+a:active {
+  color: blue;
+}
+.topHeader {
+  position: relative;
+  background-image: url("../../img/touristAttraction/tour.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 0;
+  height: 300px;
+}
+
+.topHeader::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 0;
+}
+.title {
+  position: relative;
+  z-index: 2;
+}
+
+h1 {
+  color: white;
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 150px;
+}
+
+.navbar {
+  padding-left: 5%;
+  font-size: 25px;
+}
+
+.searchArea {
+  height: 350px;
+  background: #eee;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.search {
+  width: 80%;
+}
+
+.searchTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  width: 15%;
+  text-align: center;
+  margin-right: 10px;
+  line-height: 50px;
+}
+
+.search-service {
+  display: flex;
+}
+
+.service {
+  width: 27%;
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+
+.search-Area {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+}
+
+.area {
+  width: 41%;
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+.search-Word {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+.word {
+  width: 83%;
+}
+
+.search-Btn {
+  width: 60%;
+  background-color: #1ab394;
+  border: none;
+}
+
+.searchCancel-Btn {
+  width: 38%;
+}
+
+.resultNoting {
+  font-size: 18px;
+  width: 100%;
+  text-align: center;
+}
+
+.cardArea {
+  margin-top: 30px;
+}
+
+.card:hover,
+.card.active {
+  border: 1px solid transparent;
+  -webkit-box-shadow: 0 3px 7px 0 #a8a8a8;
+  -moz-box-shadow: 0 3px 7px 0 #a8a8a8;
+  box-shadow: 0 3px 7px 0 #a8a8a8;
+}
+
+.card img {
+  width: 100%;
+  height: 150px;
+  background-color: #eee;
+}
+
+.card-title {
+  width: 100%;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin: 5px 0 10px 0;
+}
+.card-title:hover,
+.card-title:focus {
+  color: #1ab394;
+}
+
+.like {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #1ab394;
+  padding: 5px 10px;
+  position: absolute;
+  top: 113px;
+  right: 0;
+}
+
+.pageArea {
+  margin-top: 100px;
+  margin-bottom: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.detailTitleArea {
+  padding: 50px 20px 20px 20px;
+  height: 450px;
+}
+
+.detailTitle {
+  font-size: 24px;
+  font-weight: bold;
+  position: relative;
+  height: 50px;
+}
+
+.detailLike {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1ab394;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#carouselExampleIndicators {
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+}
+.carousel-indicators img {
+  width: 100%;
+}
+
+.detailTabArea {
+  padding: 30px 20px 20px 40px;
+  height: 450px;
+}
+
+.tab-content {
+  height: 340px;
+  padding: 30px 10px 10px 10px;
+  font-size: 17px;
+  line-height: 32px;
+  text-indent: 10px;
+  overflow-y: auto;
+}
+
+.mapArea {
+  margin-top: 30px;
+}
+
+#map {
+  width: 100%;
+  height: 400px;
+}
+
+.mapTitle {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.btnArea {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.kakao-Btn {
+  width: 48%;
+  border: none;
+}
+
+.list-Btn {
+  width: 48%;
+}
