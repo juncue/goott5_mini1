@@ -62,7 +62,7 @@ h1 {
 }
 
 .search {
-  width: 70%;
+  width: 75%;
 }
 
 .searchTitle {
@@ -127,7 +127,7 @@ h1 {
   width: 38%;
 }
 
-@media (max-width: 950px) {
+@media (max-width: 1000px) {
   .searchArea {
     padding: 30px 0 30px 0;
     background: #eee;
@@ -135,11 +135,11 @@ h1 {
     flex-direction: column;
     justify-content: center;
   }
-  
+
   .search {
     width: 100%;
   }
-  
+
   .searchTitle {
     font-size: 20px;
     font-weight: 600;
@@ -159,7 +159,7 @@ h1 {
     display: flex;
     flex-direction: column;
   }
-  
+
   .service {
     width: 50%;
     margin-right: 10px;
@@ -170,7 +170,7 @@ h1 {
     flex-direction: column;
     justify-content: start;
   }
-  
+
   .area {
     width: 50%;
     margin-right: 10px;
@@ -182,11 +182,10 @@ h1 {
     flex-direction: column;
     margin-bottom: 20px;
   }
-  
+
   .word {
     width: 100%;
   }
-
 }
 .resultNoting {
   font-size: 18px;
@@ -246,8 +245,7 @@ h1 {
 .detailTitleArea {
   padding: 30px 20px 0px 20px;
   height: 420px;
-  box-shadow: 
-    2px 2px 5px rgba(0, 0, 0, 0.2),
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2),
     -2px -2px 5px rgba(255, 255, 255, 0.5);
 }
 
@@ -279,7 +277,6 @@ h1 {
 .detailTabArea {
   padding: 30px 20px 0px 40px;
   height: 420px;
-
 }
 
 .tab-content {
@@ -292,26 +289,22 @@ h1 {
 }
 
 th {
-  width: 25%;;
+  width: 25%;
 }
 
 .mapArea {
   margin-top: 30px;
-  
 }
 
-.mapCover{
+.mapCover {
   padding: 2px;
-  box-shadow: 
-    2px 2px 5px rgba(0, 0, 0, 0.2),
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2),
     -2px -2px 5px rgba(255, 255, 255, 0.5);
-  
 }
 
 #map {
   width: 100%;
   height: 400px;
-  
 }
 
 .mapTitle {
@@ -329,7 +322,7 @@ th {
 .kakao-Btn {
   width: 48%;
   height: 60px;
-  font-weight:600;
+  font-weight: 600;
   border: none;
 }
 
