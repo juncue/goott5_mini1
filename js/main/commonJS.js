@@ -204,7 +204,7 @@ function outputCardsPrint(outputArr, type) {
         <div class="col-lg-3 col-md-6" data-aos="zoom-in" id=${contentid}>
             <div class="pricing-tem">
                 <h3 style="color: #20c997">${ctgyNameArr[1]}</h3>
-                <a href="${ctgyNameArr[0]}Detail.html${params}"><h4 style="height:80px">${title}</h4></a?
+                <a href="${ctgyNameArr[0]}Detail.html${params}"><h4 style="height:80px">${title}</h4></a>
                 <div class="like-icon" style="width:30px;height:30px;background-color:white; border-radius:50%; position:absolute; top:10%; left:80%;padding: 1px 0px 0px 1px">
                     <i id="${contentid}_${contenttypeid}" class="${heartClass}" style="color:#f1658a; font-size:23px"></i>
                 </div>
