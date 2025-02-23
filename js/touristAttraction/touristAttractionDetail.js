@@ -1,14 +1,6 @@
-const DETAIL_COMMON_URL = `http://apis.data.go.kr/B551011/KorService1/detailCommon1`; // 10번 공통정보조회
-const DETAIL_INTRO_URL = `http://apis.data.go.kr/B551011/KorService1/detailIntro1`; // 11번 소개정보 조회
-const DETAIL_INFO_URL = `http://apis.data.go.kr/B551011/KorService1/detailInfo1`; // 12번 반복정보 조회
-const DETAIL_IMAGE_URL = `http://apis.data.go.kr/B551011/KorService1/detailImage1`; // 13번 이미지 정보 조회
-
-const REQUIRED_PARMAS = `?MobileOS=ETC&MobileApp=AppTest&serviceKey=${MY_KEY}&_type=json`;
-const FOR_SEARCH_PARAMS = `&contentTypeId=${CONTENT_TYPE_ID}&listYN=Y&arrange=Q`;
-
 let contentId = getParameter("contentId");
-if (contentId == null) {
-  location.href = "touristAttractionList.html";
+if (contentId == "") {
+  location.href = SERVICE_URL + LIST_PAGE_URL;
 }
 
 let likeArr = readCookie();
@@ -49,8 +41,14 @@ $(function () {
   } else {
     $(".detailLike").children().eq(0).addClass("fa-regular");
   }
+  $(window).bind("pageshow", function(event){
+    if (event.originalEvent.persisted) {
+      goBackListPage()
+    }
+  })
 });
 
+// 공통정보 조회 함수
 function getDetailCommon() {
   let url =
     DETAIL_COMMON_URL +
@@ -77,6 +75,7 @@ function getDetailCommon() {
   });
 }
 
+// 소개정보 조회 함수
 function getDetailIntro() {
   let url =
     DETAIL_INTRO_URL +
@@ -97,6 +96,7 @@ function getDetailIntro() {
   });
 }
 
+// 반복정보 조회 함수
 function getDetailInfo() {
   let url =
     DETAIL_INFO_URL +
@@ -114,6 +114,7 @@ function getDetailInfo() {
   });
 }
 
+// 이미지정보 조회 함수
 function getDetailImage() {
   let url =
     DETAIL_IMAGE_URL +
@@ -127,14 +128,17 @@ function getDetailImage() {
   });
 }
 
+// 타이틀 출력
 function printTitle(title) {
   $("#detailTitle").html(title);
 }
 
+// 개요 출력
 function printOverview(overview) {
   $("#overview").html(overview);
 }
 
+// 탭 정보 출력
 function printInfo(title, value, id) {
   let output = `<table class="table">`;
   for (let i = 0; i < title.length; i++) {
@@ -149,6 +153,7 @@ function printInfo(title, value, id) {
   $(`#${id}`).html(output);
 }
 
+// 이미지 슬라이더 출력
 function printImage(data) {
   let carouselIndicators = "";
   let carouselInner = "";
@@ -192,45 +197,29 @@ function printalternativeImage(){
   $("#carouselExampleIndicators").html(output);
 }
 
+// 지도 출력
 function printMap(mapx, mapy) {
   var mapContainer = document.getElementById("map"), // 지도를 표시할 div
     mapOption = {
       center: new kakao.maps.LatLng(mapy, mapx), // 지도의 중심좌표
       level: 3, // 지도의 확대 레벨
     };
-
   var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
   // 마커가 표시될 위치입니다
   var markerPosition = new kakao.maps.LatLng(mapy, mapx);
-
   // 마커를 생성합니다
   var marker = new kakao.maps.Marker({
     position: markerPosition,
   });
-
   // 마커가 지도 위에 표시되도록 설정합니다
   marker.setMap(map);
-
   map.setZoomable(false);
-
   // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
   var zoomControl = new kakao.maps.ZoomControl();
   map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 }
 
-
-function setLike(likeIcon) {
-  if (likeIcon.children[0].classList.contains("fa-regular")) {
-    likeIcon.children[0].classList.remove("fa-regular");
-    likeIcon.children[0].classList.add("fa-solid");
-    saveCookie(`like${contentId}`, CONTENT_TYPE_ID, 6);
-  } else {
-    likeIcon.children[0].classList.add("fa-regular");
-    likeIcon.children[0].classList.remove("fa-solid");
-    saveCookie(`like${contentId}`, "", 0);
-  }
-}
-
+// 카카오톡 공유하기
 function shareMessage() {
   Kakao.init("a71a8751e5612ffa85926cc64a7631a5"); // 사용하려는 앱의 JavaScript 키 입력
   Kakao.Share.sendDefault({
@@ -243,36 +232,28 @@ function shareMessage() {
       imageUrl: img,
       link: {
         // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-        mobileWebUrl: "http://127.0.0.1:5500",
-        webUrl: "http://127.0.0.1:5500",
+        mobileWebUrl: "http://amorparami.cafe24.com",
+        webUrl: "http://amorparami.cafe24.com",
       },
     },
     buttons: [
       {
         title: "웹으로 보기",
         link: {
-          mobileWebUrl: `http://127.0.0.1:5500/project1/touristAttractionDetail.html?contentId=${contentId}`,
-          webUrl: `http://127.0.0.1:5500/project1/touristAttractionDetail.html?contentId=${contentId}`,
+          mobileWebUrl: `http://amorparami.cafe24.com/frontProject/touristAttractionDetail.html?contentId=${contentId}`,
+          webUrl: `http://amorparami.cafe24.com/frontProject/touristAttractionDetail.html?contentId=${contentId}`,
         },
       },
     ],
   });
 }
 
+// 목록페이지로 돌아갈 때 받아왔던 쿼리스트링을 그대로 돌려준다.
 function goBackListPage() {
   let page = getParameter("pageNo");
-  let params = [
-    getParameter("areaCode"),
-    getParameter("sigunguCode"),
-    getParameter("cat1"),
-    getParameter("cat2"),
-    getParameter("cat3"),
-    getParameter("keyword"),
-  ];
-  let url = makeSearchUrl(
-    SERVICE_URL + LIST_PAGE_URL + `?pageNo=${page}`,
-    params
-  );
+  let url = location.href;
+  let queryStr = url.split("?")[1];
+  
+  url = SERVICE_URL + LIST_PAGE_URL + `?pageNo=${page}` + queryStr.substring(queryStr.indexOf("&"));
   window.location.href = url.toString();
-  window.location.href = listPageUrl;
 }

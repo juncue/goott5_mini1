@@ -25,6 +25,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="js/touristAttraction/common.js"></script>
+    <script src="js/touristAttraction/pagenation.js"></script>
     <script src="js/touristAttraction/touristAttractionList.js"></script>
 
     <!-- Vendor CSS Files -->
@@ -57,7 +58,8 @@
             <li><a href="index.html" class="active">Home</a></li>
             <li class="dropdown">
               <a href="#"
-                ><span>Category</span> <i class="fa-solid fa-caret-down"></i
+                ><span>Category</span>
+                <i class="bi bi-chevron-down toggle-dropdown"></i
               ></a>
               <ul>
                 <li><a href="touristAttractionList.html">관광지</a></li>
@@ -91,45 +93,49 @@
         <div class="container search">
           <div class="search-service">
             <p class="searchTitle">서비스 분류</p>
-            <select
-              id="serviceCat1"
-              class="form-select form-select-lg mb-3 service"
-              aria-label=".form-select-lg example"
-            >
-              <option value="noValue" selected>대분류</option>
-            </select>
-            <select
-              id="serviceCat2"
-              class="form-select form-select-lg mb-3 service"
-              aria-label=".form-select-lg example"
-            >
-              <option value="noValue" selected>중분류</option>
-            </select>
-            <select
-              id="serviceCat3"
-              class="form-select form-select-lg mb-3 service"
-              aria-label=".form-select-lg example"
-            >
-              <option value="noValue" selected>소분류</option>
-            </select>
+            <div class="select-box">
+              <select
+                id="serviceCat1"
+                class="form-select form-select-lg mb-3 service"
+                aria-label=".form-select-lg example"
+              >
+                <option value="noValue" selected>대분류</option>
+              </select>
+              <select
+                id="serviceCat2"
+                class="form-select form-select-lg mb-3 service"
+                aria-label=".form-select-lg example"
+              >
+                <option value="noValue" selected>중분류</option>
+              </select>
+              <select
+                id="serviceCat3"
+                class="form-select form-select-lg mb-3 service"
+                aria-label=".form-select-lg example"
+              >
+                <option value="noValue" selected>소분류</option>
+              </select>
+            </div>
           </div>
 
           <div class="search-Area">
             <p class="searchTitle">지역</p>
-            <select
-              id="areaCode"
-              class="form-select form-select-lg mb-3 area"
-              aria-label=".form-select-lg example"
-            >
-              <option value="noValue" selected>광역시 / 도</option>
-            </select>
-            <select
-              id="sigunguCode"
-              class="form-select form-select-lg mb-3 area"
-              aria-label=".form-select-lg example"
-            >
-              <option value="noValue" selected>시 / 군 / 구</option>
-            </select>
+            <div class="select-box">
+              <select
+                id="areaCode"
+                class="form-select form-select-lg mb-3 area"
+                aria-label=".form-select-lg example"
+              >
+                <option value="noValue" selected>광역시 / 도</option>
+              </select>
+              <select
+                id="sigunguCode"
+                class="form-select form-select-lg mb-3 area"
+                aria-label=".form-select-lg example"
+              >
+                <option value="noValue" selected>시 / 군 / 구</option>
+              </select>
+            </div>
           </div>
 
           <div class="search-Word">

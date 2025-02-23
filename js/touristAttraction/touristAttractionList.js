@@ -1,13 +1,5 @@
-const AREA_CODE_URL = `http://apis.data.go.kr/B551011/KorService1/areaCode1`; // 3번 지역코드 조회
-const SERVICE_CATEGORY_URL = `http://apis.data.go.kr/B551011/KorService1/categoryCode1`; // 4번 서비스분류코드 조회
-const AREA_BASE_SEARCH_URL = `http://apis.data.go.kr/B551011/KorService1/areaBasedList1`; // 5번 지역기반 관광정보 조회
-const KEYWORD_BASE_SEARCH_URL = `http://apis.data.go.kr/B551011/KorService1/searchKeyword1`; // 7번 키워드 검색 조회
-
-const REQUIRED_PARMAS = `?MobileOS=ETC&MobileApp=AppTest&serviceKey=${MY_KEY}&_type=json`;
-const FOR_SEARCH_PARAMS = `&contentTypeId=${CONTENT_TYPE_ID}&listYN=Y&arrange=Q`;
-
-let numOfRows = 20;
-let PageGroupUnit = 10;
+let numOfRows = 20; // 한 페이지 내 출력하는 카드 개수
+let PageGroupUnit = 10;  // 페이지 출력 개수 단위
 
 let totalCount = 0;
 let totalPages = 0;
@@ -15,26 +7,25 @@ let currentPage = 1;
 
 $(function () {
   let url = location.href;
-  if (url.indexOf("?") !== -1) {
-    checkParams(url);
-  } else {
+  if (url.indexOf("?") !== -1) {  // 접속 url에 쿼리스트링이 있다면, (상세페이지에서 부터 돌아온 경우)
+    getPreviousCards(url);
+  } else {  // 접속 url에 쿼리스트링이 없다면, (최초 진입)
     getCards(currentPage); // 페이지 로딩 시 전체 카드목록 조회
     getServiceCat1Data(""); // 서비스 분류 셀렉트 박스 중 대분류 항목 조회
     getAreaCat1Data(""); // 지역 셀렉트 박스 중 광역시/도 항목 조회
   }
-  $("#searchBtn").click(function () {
-    // history.replaceState({}, null, location.pathname);
+  $("#searchBtn").click(function () {  // 검색 버튼 클릭 이벤트 리스너
+    history.replaceState({}, null, location.pathname);
     currentPage = 1;
     getCards(currentPage);
-    $("html, body").animate({ scrollTop: $("#cardArea").offset().top }, 500);
-  }); // 검색 버튼 클릭 이벤트 리스너
+    $("html, body").animate({ scrollTop: $("#cardArea").offset().top }, 300);
+  }); 
   $(".searchCancel-Btn").click(canselSearch); // 검색초기화 버튼 클릭 이벤트 리스너
 });
 
-// 카드를 가져오는 함수
+// 새로운 카드를 가져오는 함수
 function getCards(pageNo) {
   $(".spinner-border").show();
-  console.log("::::::::::");
   $("#card").empty();
   // 쿼리스트링을 만들기 위해 검색 조건을 확인
   let params = [
@@ -112,14 +103,60 @@ function printCards(json) {
   $("#card").append(output);
 }
 
-// 셀렉트박스 옵션 출력에 대한 공통 함수
-function printSelectOptions(json, htmlSelector, className) {
-  let output = "";
-  let list = json.response.body.items.item;
-  $.each(list, function (index, ele) {
-    output += `<option class="${className}" value="${ele.code}">${ele.name}</option>`;
-  });
-  $(htmlSelector).append(output);
+// 상세페이지에서 목록페이지로 돌아왔을 때, 이전 검색 내역을 출력해주기 위한 함수
+function getPreviousCards(url) {
+  console.log(url);
+  let queryStr = url.split("?")[1];
+  let pageNo = getParameter("pageNo");
+  let areaCode = getParameter("areaCode");
+  let sigunguCode = getParameter("sigunguCode");
+  let cat1 = getParameter("cat1");
+  let cat2 = getParameter("cat2");
+  let cat3 = getParameter("cat3");
+  let keyword = getParameter("keyword");
+  
+  getAreaCat1Data("");
+  getServiceCat1Data("");
+  
+  currentPage = pageNo;
+  $("#searchWord").val(decodeURI(keyword));
+
+  if (areaCode != "") {
+    getAreaCat1Data(areaCode);
+    getAreaCat2Data(areaCode, "");
+  }
+  if (sigunguCode != "") {
+    getAreaCat2Data(areaCode, sigunguCode);
+  }
+  if (cat1 != "") {
+    getServiceCat1Data(cat1);
+    getServiceCat2Data(cat1, "");
+  }
+  if (cat2 != "") {
+    getServiceCat2Data(cat1, cat2);
+    getServiceCat3Data(cat1, cat2, "");
+  }
+  if (cat3 != "") {
+    getServiceCat3Data(cat1, cat2, cat3);
+  }
+  
+  if (keyword != "") {
+    let url =
+      KEYWORD_BASE_SEARCH_URL +
+      REQUIRED_PARMAS +
+      FOR_SEARCH_PARAMS +
+      `&numOfRows=${numOfRows}&${queryStr}`;
+    console.log(url);
+    requestData(url, printCards);
+  } else {
+    let params = queryStr.split("&keyword=")[0];
+    let url =
+      AREA_BASE_SEARCH_URL +
+      REQUIRED_PARMAS +
+      FOR_SEARCH_PARAMS +
+      `&numOfRows=${numOfRows}&${params}`;
+    requestData(url, printCards);
+  }
 }
 
 // 서비스 분류 셀렉트박스 데이터 조회
@@ -185,6 +222,16 @@ function getAreaCat2Data(areaCode, sigunguCode) {
   });
 }
 
+// 셀렉트박스 옵션 출력에 대한 공통 함수
+function printSelectOptions(json, htmlSelector, className) {
+  let output = "";
+  let list = json.response.body.items.item;
+  $.each(list, function (index, ele) {
+    output += `<option class="${className}" value="${ele.code}">${ele.name}</option>`;
+  });
+  $(htmlSelector).append(output);
+}
+
 // 셀렉트 박스 변경에 대한 이벤트리스너
 $(document).on("change", "#serviceCat1", function () {
   $(".serviceCat2, .serviceCat3").remove();
@@ -212,54 +259,10 @@ function canselSearch() {
   getServiceCat1Data("");
   getAreaCat1Data("");
   $("#searchWord").val("");
+  getCards(1);
 }
 
-// 페이지 출력 함수
-function printPagination() {
-  $(".pagination").empty();
-  console.log(currentPage);
-  console.log(totalCount);
-  console.log(totalPages);
-
-  let currentPageGroup = Math.ceil(currentPage / PageGroupUnit); // 현재 페이지 그룹
-  let startPage = (currentPageGroup - 1) * PageGroupUnit + 1; // 그룹의 첫 페이지
-  let endPage = Math.min(startPage + PageGroupUnit - 1, totalPages); // 그룹의 마지막 페이지
-  // 이전 버튼 생성
-  if (currentPageGroup > 1) {
-    $(".pagination").append(`<li class="page-item" onclick="changePage(${
-      startPage - 1
-    })">
-            <a class="page-link" href="javascript:void(0)" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>`);
-  }
-  // 페이지 번호 버튼 생성
-  for (let i = startPage; i <= endPage; i++) {
-    let activeClass = i == currentPage ? "active" : "";
-    $(".pagination").append(
-      `<li class="page-item ${activeClass}" onclick="changePage(${i})"><a class="page-link" href="javascript:void(0)">${i}</a></li>`
-    );
-  }
-  // 다음 버튼 생성
-  if (endPage < totalPages) {
-    $(".pagination").append(`<li class="page-item" onclick="changePage(${
-      endPage + 1
-    })">
-            <a class="page-link" href="javascript:void(0)" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>`);
-  }
-}
-
-function changePage(page) {
-  currentPage = page;
-  getCards(currentPage);
-  printPagination();
-  $("html, body").animate({ scrollTop: $("#cardArea").offset().top }, 500);
-}
-
+// 찜 설정/해제 함수
 function setLike(likeIcon) {
   if (likeIcon.children[0].classList.contains("fa-regular")) {
     likeIcon.children[0].classList.remove("fa-regular");
@@ -272,6 +275,7 @@ function setLike(likeIcon) {
   }
 }
 
+// 상세페이지로 이동 시 쿼리스트링 만들어서 넘겨주는 함수
 function goDetailPage(card) {
   let params = [
     $("#areaCode").val(),
@@ -281,64 +285,21 @@ function goDetailPage(card) {
     $("#serviceCat3").val(),
     $("#searchWord").val(),
   ];
-  let url = makeSearchUrl(
-    SERVICE_URL +
-      DETAIL_PAGE_URL +
-      `?contentId=${card.id}&pageNo=${currentPage}`,
+
+  let ListUrl = makeSearchUrl(
+    SERVICE_URL + LIST_PAGE_URL + `?pageNo=${currentPage}`,
     params
   );
-  console.log(url.toString());
-  window.location.href = url.toString();
+  let DetailUrl = makeSearchUrl(
+    SERVICE_URL +
+    DETAIL_PAGE_URL +
+    `?contentId=${card.id}&pageNo=${currentPage}`,
+    params
+  );
+  // 현재 상태를 히스토리에 저장 (상세페이지에서 뒤로 가기 시 ListUrl로 이동하도록 설정)
+  history.pushState({ path: ListUrl.toString() }, "", ListUrl.toString());
+
+  // 상세 페이지로 이동
+  window.location.href = DetailUrl.toString();
 }
 
-function checkParams(url) {
-  console.log(url);
-  let queryStr = url.split("?")[1];
-  let pageNo = getParameter("pageNo");
-  let areaCode = getParameter("areaCode");
-  let sigunguCode = getParameter("sigunguCode");
-  let cat1 = getParameter("cat1");
-  let cat2 = getParameter("cat2");
-  let cat3 = getParameter("cat3");
-  let keyword = getParameter("keyword");
-  history.replaceState({}, null, location.pathname);
-
-  currentPage = pageNo;
-  $("#searchWord").val(decodeURI(keyword));
-
-  if (keyword != "") {
-    let url =
-      KEYWORD_BASE_SEARCH_URL +
-      REQUIRED_PARMAS +
-      FOR_SEARCH_PARAMS +
-      `&numOfRows=${numOfRows}&${queryStr}`;
-    console.log(url);
-    requestData(url, printCards);
-  } else {
-    let params = queryStr.split("&keyword=")[0];
-    let url =
-      AREA_BASE_SEARCH_URL +
-      REQUIRED_PARMAS +
-      FOR_SEARCH_PARAMS +
-      `&numOfRows=${numOfRows}&${params}`;
-    requestData(url, printCards);
-  }
-  if (areaCode != "") {
-    getAreaCat1Data(areaCode);
-    getAreaCat2Data(areaCode, "");
-  }
-  if (sigunguCode != "") {
-    getAreaCat2Data(areaCode, sigunguCode);
-  }
-  if (cat1 != "") {
-    getServiceCat1Data(cat1);
-    getServiceCat2Data(cat1, "");
-  }
-  if (cat2 != "") {
-    getServiceCat2Data(cat1, cat2);
-    getServiceCat3Data(cat1, cat2, "");
-  }
-  if (cat3 != "") {
-    getServiceCat3Data(cat1, cat2, cat3);
-  }
-}
