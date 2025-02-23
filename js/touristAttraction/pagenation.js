@@ -1,10 +1,6 @@
 // 페이지 출력 함수
 function printPagination() {
-    $(".pagination").empty();
-    console.log(currentPage);
-    console.log(totalCount);
-    console.log(totalPages);
-  
+    $(".pagination").empty(); 
     let currentPageGroup = Math.ceil(currentPage / PageGroupUnit); // 현재 페이지 그룹
     let startPage = (currentPageGroup - 1) * PageGroupUnit + 1; // 그룹의 첫 페이지
     let endPage = Math.min(startPage + PageGroupUnit - 1, totalPages); // 그룹의 마지막 페이지

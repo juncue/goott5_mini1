@@ -293,7 +293,7 @@ function goDetailPage(card) {
   let DetailUrl = makeSearchUrl(
     SERVICE_URL +
     DETAIL_PAGE_URL +
-    `?contentId=${card.id}&pageNo=${currentPage}`,
+    `?contentid=${card.id}&pageNo=${currentPage}`,
     params
   );
   // 현재 상태를 히스토리에 저장 (상세페이지에서 뒤로 가기 시 ListUrl로 이동하도록 설정)

@@ -1,4 +1,4 @@
-let contentId = getParameter("contentId");
+let contentId = getParameter("contentid");
 if (contentId == "") {
   location.href = SERVICE_URL + LIST_PAGE_URL;
 }
@@ -240,8 +240,8 @@ function shareMessage() {
       {
         title: "웹으로 보기",
         link: {
-          mobileWebUrl: `http://amorparami.cafe24.com/frontProject/touristAttractionDetail.html?contentId=${contentId}`,
-          webUrl: `http://amorparami.cafe24.com/frontProject/touristAttractionDetail.html?contentId=${contentId}`,
+          mobileWebUrl: `http://amorparami.cafe24.com/frontProject/touristAttractionDetail.html?contentid=${contentId}`,
+          webUrl: `http://amorparami.cafe24.com/frontProject/touristAttractionDetail.html?contentid=${contentId}`,
         },
       },
     ],

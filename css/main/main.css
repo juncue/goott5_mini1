@@ -723,7 +723,7 @@ section,
 
 .hero .icon-box {
   background: var(--surface-color);
-  padding: 60px 30px;
+  padding: 30px 20px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 0 29px 0 rgba(0, 0, 0, 0.1);
@@ -738,7 +738,7 @@ section,
 .hero .icon-box .title {
   font-weight: 700;
   margin-bottom: 15px;
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .hero .icon-box .title a {
@@ -769,6 +769,7 @@ section,
   color: var(--accent-color);
   padding-right: 5px;
 }
+
 
 /*--------------------------------------------------------------
 # About Section - 불필요
