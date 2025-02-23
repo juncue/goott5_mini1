@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tour API - index</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+
+    <!-- Scripts -->
+    <script src="js/main/commonJS.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0d026de4bca5ca0a35c35c6b7dfd7c2b"
+    ></script>
+
+    <!-- Favicons -->
+    <link href="img/main/favicon.png" rel="icon" />
+    <link href="img/main/apple-touch-icon.png" rel="apple-touch-icon" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/9bef4b10f4.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Vendor CSS Files -->
+    <link href="css/main/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/main/bootstrap-icons.css" rel="stylesheet" />
+    <link href="css/main/aos.css" rel="stylesheet" />
+    <link href="css/main/glightbox.min.css" rel="stylesheet" />
+
+    <!-- Main CSS File -->
+    <link href="css/main/main.css" rel="stylesheet" />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"
+    />
+
+    <script>
+      // 변수 초기화
+      saveAllCookies(
+        {
+          pageNo: 1,
+          userNumOfRows: 16,
+          totalItemCnt: 0,
+          totalPageCnt: 1,
+          userAreaCode: 0,
+          userSigunguCode: 0,
+          userCat3: 0,
+          userKeyword: "",
+          userArrange: "D",
+        },
+        180
+      );
+
+      let obj = readAllCookies();
+      console.log(obj);
+      let pageNo = Number(obj["pageNo"]); // 현재 페이지번호
+      let userNumOfRows = Number(obj["userNumOfRows"]); //  페이지당 아이템 개수
+      let totalItemCnt = Number(obj["totalItemCnt"]); // 총 아이템 개수
+      let totalPageCnt = Number(obj["totalPageCnt"]); // 총 페이지 수
+      let userAreaCode = Number(obj["userAreaCode"]); // 유저가 선택한 지역코드
+      let userSigunguCode = Number(obj["userSigunguCode"]); // 유저가 선택한 시군구코드
+      let userCat3 = obj["userCat3"]; // 유저가 선택한 음식점카테고리
+      let userKeyword = obj["userKeyword"]; // 유저가 조회한 키워드
+      let userArrange = obj["userArrange"]; // 정렬기준
+      const mandatoryParam = `?serviceKey=WrJy3pfOYz1hkMiL8Abf%2F4xMonLUd5NZhbU7%2B6kUeS9RGKbuP9wl7OhluEKA9Ot2T0soe2w%2F8%2Bfpd7yF4E4M4A%3D%3D&_type=json&MobileOS=ETC&MobileApp=AppTest&`; // 필수 파라미터
+      let likeItemArr = new Array();
+      let likeItemObj = {};
+
+      $(document).ready(function () {
+        // 찜한목록 개수 화면에 출력하기
+        likeCountFunc();
+
+        // 최근목록 아이템 호출하기
+        ajaxFunc(
+          "recentItemParsing",
+          `http://apis.data.go.kr/B551011/KorService1/areaBasedList1${mandatoryParam}`,
+          {
+            numOfRows: userNumOfRows,
+            pageNo: pageNo,
+            areaCode: userAreaCode,
+            sigunguCode: userSigunguCode,
+            cat1: "A05",
+            cat2: "A0502",
+            cat3: userCat3,
+            arrange: userArrange,
+          }
+        );
+
+        // 찜한목록 출력하기
+        for (let key in obj) {
+          // likeItemArr에 찜한 목록들의 contentid 담기
+          if (key.match("like") != null) likeItemArr.push(key.substr(4));
+        }
+        if (likeItemArr.length == 0) {
+          console.log("찜한 목록 없는 상태");
+          // $(".modal-body").html("내가 찜한 목록이 없습니다... 좋아하는 음식점에 하트를 눌러보세요!");
+          // $('#modalAlert').modal('show');
+        } else {
+          likeItemObj = {};
+          // 찜한 목록을 각각 호출하여 필요한 정보를 객체에 담기
+          for (let i = 0; i < likeItemArr.length; i++) {
+            ajaxFunc(
+              "likeItemParsing",
+              `http://apis.data.go.kr/B551011/KorService1/detailCommon1${mandatoryParam}`,
+              {
+                contentId: likeItemArr[i],
+                defaultYN: "Y",
+                firstImageYN: "Y",
+                areacodeYN: "Y",
+                catcodeYN: "Y",
+                addrinfoYN: "Y",
+                mapinfoYN: "Y",
+                overviewYN: "Y",
+              }
+            );
+          }
+          console.log(likeItemArr, likeItemObj);
+          // 취합한 찜한 목록을 출력
+          likeItemsCollect(likeItemObj, "first");
+        }
+
+        // 각 아이템에 좋아요 버튼 클릭할 경우, 쿠키 저장하기
+        $(document).on("click", ".fa-heart", function () {
+          likeItemObj = {}; // 초기화
+          console.log($(this));
+
+          console.log($(this).attr("id"));
+          let id_ctgy = $(this).attr("id"); // contentid_contentTypeId
+          let id_ctgyArr = $(this).attr("id").split("_");
+
+          // key: contentid, value: contentTypeId
+          let obj = {};
+          obj[`like${id_ctgyArr[0]}`] = id_ctgyArr[1];
+
+          // 빈 하트 상태에서 클릭시, 빈 하트 제거, false 반환 | 채운 하트 상태에서 클릭시, 빈 하트 추가, true 반환
+          let result = this.classList.toggle("fa-regular");
+
+          if (result) {
+            // true 반환(좋아요 해제)
+            console.log(id_ctgyArr[0]);
+            // 최근목록 또는 찜한목록 또는 검색목록에서 찜 해제했을 때, 찜한목록에 있는 카드요소 지우기
+            $(".likeContentsArea").find(`div[id="${id_ctgyArr[0]}"]`).remove();
+
+            this.classList.remove("fa-solid");
+            console.log("좋아요 해제");
+            saveAllCookies(obj, 0);
+          } else {
+            // false 반환(좋아요)
+            // 최근목록 또는 검색목록에서 찜 했을 때
+            this.classList.add("fa-solid"); // 그 자리에 채운하트 추가
+            saveAllCookies(obj, 180);
+
+            ajaxFunc(
+              "likeItemParsing",
+              `http://apis.data.go.kr/B551011/KorService1/detailCommon1${mandatoryParam}`,
+              {
+                contentId: id_ctgyArr[0],
+                defaultYN: "Y",
+                firstImageYN: "Y",
+                areacodeYN: "Y",
+                catcodeYN: "Y",
+                addrinfoYN: "Y",
+                mapinfoYN: "Y",
+                overviewYN: "Y",
+              }
+            );
+            likeItemsCollect(likeItemObj, "add");
+          }
+          likeCountFunc();
+        });
+
+        $(".autoplay").slick({
+          slidesToShow: 4,
+          slidesToScroll: 1,
+          autoplay: true,
+          autoplaySpeed: 3000,
+        });
+
+        //  검색창에 엔터키 눌렀을 경우, 검색버튼 클릭 트리거 작동하기
+        $("#textKeywordInput").on("keyup", function (key) {
+          if (key.keyCode == 13) {
+            $(".searchBtn").trigger("click");
+          }
+        });
+
+        $(document).on("click", ".searchBtn", function (e) {
+          // 키워드검색버튼 눌렀을 경우, 아이템 호출하기
+          e.preventDefault();
+          if ($("#textKeywordInput").val() == "") {
+            // 키워드 입력 없이 검색할 경우 모달창 띄우기
+            $(".modal-body").html("키워드를 입력해주세요");
+            $("#modalAlert").modal("show");
+          } else {
+            // 키워드 정상 입력
+            userKeyword = $("#textKeywordInput").val();
+            pageNo = 1;
+            saveAllCookies({ userKeyword: userKeyword, pageNo: pageNo }, 180);
+            console.log("searchItem");
+            ajaxFunc(
+              "searchItemParsing",
+              `http://apis.data.go.kr/B551011/KorService1/searchKeyword1${mandatoryParam}`,
+              {
+                numOfRows: userNumOfRows,
+                pageNo: pageNo,
+                areaCode: userAreaCode,
+                sigunguCode: userSigunguCode,
+                cat1: "A05",
+                cat2: "A0502",
+                cat3: userCat3,
+                keyword: userKeyword,
+                arrange: userArrange,
+              }
+            );
+          }
+        });
+
+        $(document).on("click", ".searchNextBtn", function (e) {
+          e.preventDefault();
+          pageNo++;
+          saveAllCookies({ userKeyword: userKeyword, pageNo: pageNo }, 180);
+          ajaxFunc(
+            "searchItemNextParsing",
+            `http://apis.data.go.kr/B551011/KorService1/searchKeyword1${mandatoryParam}`,
+            {
+              numOfRows: userNumOfRows,
+              pageNo: pageNo,
+              areaCode: userAreaCode,
+              sigunguCode: userSigunguCode,
+              cat1: "A05",
+              cat2: "A0502",
+              cat3: userCat3,
+              keyword: userKeyword,
+              arrange: userArrange,
+            }
+          );
+        });
+      });
+    </script>
+  </head>
+
+  <body class="index-page">
+    <header
+      id="header"
+      class="header d-flex align-items-center sticky-top"
+      style="height: 80px"
+    >
+      <div
+        class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between"
+      >
+        <a href="index.html" class="logo d-flex align-items-center">
+          <h1 class="sitename"><span>goott</span>Academy5</h1>
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li class="dropdown">
+              <a href="#"
+                ><span>Category</span>
+                <i class="bi bi-chevron-down toggle-dropdown"></i
+              ></a>
+              <ul>
+                <li><a href="touristAttractionList.html">관광지</a></li>
+                <li><a href="cultureList.html">문화시설</a></li>
+                <li><a href="festivalList.html">축제공연행사</a></li>
+                <li><a href="travelList.html">여행코스</a></li>
+                <li><a href="leportsList.html">레포츠</a></li>
+                <li><a href="lodgmentList.html">숙박</a></li>
+                <li><a href="shoppingList.html">쇼핑</a></li>
+                <li><a href="restaurantList.html">음식점</a></li>
+                <li><a href="petList.html">반려동물</a></li>
+              </ul>
+            </li>
+          </ul>
+          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- 통합검색 및 최신관광 컨텐츠 Section -->
+
+      <section id="hero" class="hero section light-background">
+        <div
+          class="container position-relative"
+          data-aos="fade-up"
+          data-aos-delay="100"
+        >
+          <div class="row gy-5">
+            <div
+              class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center"
+            >
+              <h2>Tour API &nbsp; ver 1.0</h2>
+              <p>
+                관광 정보, 사진 등의 데이터를 실시간 Open API를 통해 제공하고
+                있습니다.
+              </p>
+              <div class="d-flex">
+                <div class="col-md-12">
+                  <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="검색어를 입력하세요."
+                    required=""
+                    id="textKeywordInput"
+                  />
+                </div>
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  id="textKewordBtn"
+                  class="btn-get-started searchBtn"
+                  title="Search"
+                  style="
+                    border: none;
+                    border-right: 0px;
+                    border-top: 0px;
+                    border-left: 0px;
+                    border-bottom: 0px;
+                  "
+                >
+                  통합 검색
+                </button>
+              </div>
+            </div>
+            <div class="col-lg-6 order-1 order-lg-2">
+              <img src="img/main/mainImg.png" class="img-fluid" alt="" />
+            </div>
+          </div>
+        </div>
+        <div
+          class="icon-boxes position-relative"
+          data-aos="fade-up"
+          data-aos-delay="200"
+        >
+          <!-- 최신 관광 컨텐츠 -->
+          <div class="container position-relative">
+            <h3>최신 관광 콘텐츠</h3>
+            <div
+              class="recentContentsArea row gy-4 mt-5 autoplay"
+              style="margin: 0px 30px"
+            >
+              <!--  -->
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /통합검색 및 최신관광 컨텐츠 Section -->
+
+      <!-- Services Section -->
+      <section id="services" class="services section">
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Services</h2>
+          <div>
+            <span>Check Our</span>
+            <span class="description-title">Services</span>
+          </div>
+        </div>
+        <!-- End Section Title -->
+
+        <div class="container">
+          <div class="row gy-4">
+            <div
+              class="col-lg-4 col-md-6"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <img src="img/main/tourist.png" />
+                </div>
+                <a href="touristAttractionList.html" class="stretched-link">
+                  <h3>관광지</h3>
+                </a>
+                <p>made by 준규</p>
+                <p>
+                  <i class="fa-solid fa-heart" style="color: #f1658a"></i
+                  ><span id="like-touristAttraction"> <b>5</b></span>
+                </p>
+              </div>
+            </div>
+            <!-- End Service Item -->
+
+            <div
+              class="col-lg-4 col-md-6"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <img src="img/main/culture.png" />
+                </div>
+                <a href="cultureList.html" class="stretched-link">
+                  <h3>문화시설</h3>
+                </a>
+                <p>made by 인수</p>
+                <p>
+                  <i class="fa-solid fa-heart" style="color: #f1658a"></i
+                  ><span id="like-culture"> <b>5</b></span>
+                </p>
+              </div>
+            </div>
+            <!-- End Service Item -->
+
+            <div
+              class="col-lg-4 col-md-6"
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <img src="img/main/festival.png" />
+                </div>
+                <a href="festivalList.html" class="stretched-link">
+                  <h3>축제공연행사</h3>
+                </a>
+                <p>made by 유진</p>
+                <p>
+                  <i class="fa-solid fa-heart" style="color: #f1658a"></i
+                  ><span id="like-festival"> <b>5</b></span>
+                </p>
+              </div>
+            </div>
+            <!-- End Service Item -->
+
+            <div
+              class="col-lg-4 col-md-6"
+              data-aos="fade-up"
+              data-aos-delay="400"
+            >
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <img src="img/main/tourist.png" />
+                </div>
+                <a href="travelList.html" class="stretched-link">
+                  <h3>여행코스</h3>
+                </a>
+                <p>made by 성현</p>
+                <p>
+                  <i class="fa-solid fa-heart" style="color: #f1658a"></i
+                  ><span id="like-travel"> <b>5</b></span>
+                </p>
+              </div>
+            </div>
+            <!-- End Service Item -->
+
+            <div
+              class="col-lg-4 col-md-6"
+              data-aos="fade-up"
+              data-aos-delay="500"
+            >
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <img src="img/main/reports.png" />
+                </div>
+                <a href="leportsList.html" class="stretched-link">
+                  <h3>레포츠</h3>
+                </a>
+                <p>made by 성욱</p>
+                <p>
+                  <i class="fa-solid fa-heart" style="color: #f1658a"></i
+                  ><span id="like-leports"> <b>5</b></span>
+                </p>
+              </div>
+            </div>
+            <!-- End Service Item -->
+
+            <div
+              class="col-lg-4 col-md-6"
+              data-aos="fade-up"
+              data-aos-delay="600"
+            >
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <img src="img/main/accommodation.png" />
+                </div>
+                <a href="lodgmentList.html" class="stretched-link">
+                  <h3>숙박</h3>
+                </a>
+                <p>made by 강</p>
+                <p>
+                  <i class="fa-solid fa-heart" style="color: #f1658a"></i
+                  ><span id="like-lodgment"> <b>5</b></span>
+                </p>
+              </div>
+            </div>
+            <!-- End Service Item -->
+
+            <div
+              class="col-lg-4 col-md-6"
+              data-aos="fade-up"
+              data-aos-delay="700"
+            >
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <img src="img/main/shopping.png" />
+                </div>
+                <a href="shoppingList.html" class="stretched-link">
+                  <h3>쇼핑</h3>
+                </a>
+                <p>made by 소미</p>
+                <p>
+                  <i class="fa-solid fa-heart" style="color: #f1658a"></i
+                  ><span id="like-shopping"> <b>5</b></span>
+                </p>
+              </div>
+            </div>
+            <!-- End Service Item -->
+
+            <div
+              class="col-lg-4 col-md-6"
+              data-aos="fade-up"
+              data-aos-delay="800"
+            >
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <img src="img/main/restaurant.png" />
+                </div>
+                <a href="restaurantList.html" class="stretched-link">
+                  <h3>음식점</h3>
+                </a>
+                <p>made by 종원</p>
+                <p>
+                  <i class="fa-solid fa-heart" style="color: #f1658a"></i
+                  ><span id="like-restaurant"> <b>5</b></span>
+                </p>
+              </div>
+            </div>
+            <!-- End Service Item -->
+
+            <div
+              class="col-lg-4 col-md-6"
+              data-aos="fade-up"
+              data-aos-delay="900"
+            >
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <img src="img/main/restaurant.png" />
+                </div>
+                <a href="petList.html" class="stretched-link">
+                  <h3>반려동물</h3>
+                </a>
+                <p>made by 영재</p>
+                <p></p>
+              </div>
+            </div>
+            <!-- End Service Item -->
+          </div>
+        </div>
+      </section>
+      <!-- /Services Section -->
+
+      <!-- 찜 목록 Section -->
+      <section id="hero" class="hero section light-background">
+        <!-- <section id="pricing" class="pricing section light-background"> -->
+        <div class="container section-title" data-aos="fade-up">
+          <h2>찜한 목록</h2>
+          <div>
+            <span>Check Your</span>
+            <span class="description-title">Favorites</span>
+          </div>
+        </div>
+        <!-- End Section Title -->
+
+        <div
+          class="icon-boxes position-relative"
+          data-aos="fade-up"
+          data-aos-delay="200"
+        >
+          <!-- 찜 목록 -->
+          <div class="container position-relative">
+            <div
+              class="likeContentsArea row gy-4 mt-5"
+              style="margin: 0px 30px"
+            ></div>
+          </div>
+        </div>
+      </section>
+      <!-- /찜 목록 Section -->
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="container">
+        <div class="copyright text-center">
+          <p>
+            © <span>Copyright</span>
+            <strong class="px-1 sitename">goottAcademy5</strong>
+            <span>All Rights Reserved</span>
+          </p>
+        </div>
+
+        <div class="credits">
+          <!-- All the links in the footer should remain intact. -->
+          <!-- You can delete the links only if you've purchased the pro version. -->
+          <!-- Licensing information: https://bootstrapmade.com/license/ -->
+          <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scroll Top -->
+    <a
+      href="#"
+      id="scroll-top"
+      class="scroll-top d-flex align-items-center justify-content-center"
+      ><i class="fa-solid fa-arrow-up"></i
+    ></a>
+
+    <!-- The Modal modalPageAlert-->
+    <div class="modal" id="modalAlert">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <span
+              style="text-align: center; font-size: 20px; width: 440px"
+              class="modal-title"
+              >&nbsp;&nbsp;&nbsp;&nbsp;안 내</span
+            >
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body" style="text-align: center"></div>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <p class="mb-0">
+              <a href="#" class="btn-learn-more" data-bs-dismiss="modal">OK</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- The Modal modalPageAlert-->
+    <div class="modal" id="modalAlertFull" style="background-color: white">
+      <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <span
+              style="text-align: center; font-size: 20px; width: 440px"
+              class="modal-title"
+              >&nbsp;&nbsp;&nbsp;&nbsp;검색결과</span
+            >
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              style="
+                margin-left: 70%;
+                padding: 10px 10px;
+                width: 15px;
+                height: 15px;
+                background-size: 100%;
+              "
+            ></button>
+          </div>
+          <!-- Modal body -->
+          <section id="hero" class="hero section light-background">
+            <div
+              class="icon-boxes position-relative"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+              <div class="container position-relative">
+                <div
+                  class="modal-body-full row gy-4 mt-5"
+                  style="margin: 0px 30px"
+                ></div>
+              </div>
+            </div>
+            <!-- <div class="modal-body-full container position-relative" style="text-align:center;display:flex">
+						</div> -->
+          </section>
+          <!-- Modal footer -->
+          <div
+            class="modal-footer"
+            style="width: 88%; font-size: 20px; background-color: white"
+          >
+            <p class="mb-0">
+              <a href="#" class="btn-learn-more" data-bs-dismiss="modal"
+                ><b>닫기</b></a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div id="preloader"></div> -->
+    </div>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="js/main/bootstrap.bundle.min.js"></script>
+    <script src="js/main/aos.js"></script>
+    <script src="js/main/glightbox.min.js"></script>
+
+    <!-- Main JS File -->
+    <script src="js/main/main.js"></script>
+
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+    ></script>
+  </body>
+</html>
