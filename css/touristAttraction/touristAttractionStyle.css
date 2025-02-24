@@ -288,6 +288,21 @@ h1 {
   overflow-y: auto;
 }
 
+@media (max-width: 999px) {
+  .detailTabArea {
+    padding: 30px 10px 30px 10px;
+    height: 400px;
+    margin-bottom: 20px;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 10px;
+  }
+  .kakao-Btn {
+    font-size: medium;
+  }
+}
+
 th {
   width: 25%;
 }

@@ -1,4 +1,5 @@
-const SERVICE_URL = "http://amorparami.cafe24.com/frontProject/";
+// const SERVICE_URL = "http://amorparami.cafe24.com/frontProject/";  // 운영
+const SERVICE_URL = ""; // 로컬
 const LIST_PAGE_URL = `touristAttractionList.html`;
 const DETAIL_PAGE_URL = `touristAttractionDetail.html`;
 

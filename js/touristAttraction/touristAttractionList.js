@@ -1,5 +1,5 @@
 let numOfRows = 20; // 한 페이지 내 출력하는 카드 개수
-let PageGroupUnit = 10;  // 페이지 출력 개수 단위
+let PageGroupUnit = 10; // 페이지 출력 개수 단위
 
 let totalCount = 0;
 let totalPages = 0;
@@ -7,21 +7,30 @@ let currentPage = 1;
 
 $(function () {
   let url = location.href;
-  if (url.indexOf("?") !== -1) {  // 접속 url에 쿼리스트링이 있다면, (상세페이지에서 부터 돌아온 경우)
+  if (url.indexOf("?") !== -1) {
+    // 접속 url에 쿼리스트링이 있다면, (상세페이지에서 부터 돌아온 경우)
     getPreviousCards(url);
-  } else {  // 접속 url에 쿼리스트링이 없다면, (최초 진입)
+  } else {
+    // 접속 url에 쿼리스트링이 없다면, (최초 진입)
     getCards(currentPage); // 페이지 로딩 시 전체 카드목록 조회
     getServiceCat1Data(""); // 서비스 분류 셀렉트 박스 중 대분류 항목 조회
     getAreaCat1Data(""); // 지역 셀렉트 박스 중 광역시/도 항목 조회
   }
-  $("#searchBtn").click(function () {  // 검색 버튼 클릭 이벤트 리스너
-    history.replaceState({}, null, location.pathname);
-    currentPage = 1;
-    getCards(currentPage);
-    $("html, body").animate({ scrollTop: $("#cardArea").offset().top }, 300);
-  }); 
+  $("#searchBtn, #basic-addon2").click(searchCards); // 검색버튼 클릭에 대한 이벤트 리스너
+  $("#searchWord").keyup(function (e) {
+    // 검색창 엔터 입력에 대한 이벤트 리스너
+    if (e.keyCode == 13) searchCards();
+  });
   $(".searchCancel-Btn").click(canselSearch); // 검색초기화 버튼 클릭 이벤트 리스너
 });
+
+// 검색버튼 클릭 또는 검색창 엔터 입력 시 처리 함수
+function searchCards() {
+  history.replaceState({}, null, location.pathname);
+  currentPage = 1;
+  getCards(currentPage);
+  $("html, body").animate({ scrollTop: $("#cardArea").offset().top }, 300);
+}
 
 // 새로운 카드를 가져오는 함수
 function getCards(pageNo) {
@@ -69,7 +78,7 @@ function printCards(json) {
   if (totalCount == 0) {
     $("#totalCount").html(0);
     $(".pagination").empty();
-    output = `<div class="resultNoting">검색 결과가 없습니다.</div>`
+    output = `<div class="resultNoting">검색 결과가 없습니다.</div>`;
   } else {
     $("#totalCount").html(totalCount);
     printPagination(); // 페이지 출력
@@ -114,10 +123,10 @@ function getPreviousCards(url) {
   let cat2 = getParameter("cat2");
   let cat3 = getParameter("cat3");
   let keyword = getParameter("keyword");
-  
+
   getAreaCat1Data("");
   getServiceCat1Data("");
-  
+
   currentPage = pageNo;
   $("#searchWord").val(decodeURI(keyword));
 
@@ -139,7 +148,7 @@ function getPreviousCards(url) {
   if (cat3 != "") {
     getServiceCat3Data(cat1, cat2, cat3);
   }
-  
+
   if (keyword != "") {
     let url =
       KEYWORD_BASE_SEARCH_URL +
@@ -167,8 +176,8 @@ function getServiceCat1Data(cat1) {
     `&contentTypeId=${CONTENT_TYPE_ID}`;
   requestData(url, function (data) {
     printSelectOptions(data, "#serviceCat1", "serviceCat1");
-    if (cat1 != ""){
-      $("#serviceCat1 option").attr("selected", false); 
+    if (cat1 != "") {
+      $("#serviceCat1 option").attr("selected", false);
       $("#serviceCat1").val(cat1).attr("selected", true);
     }
   });
@@ -180,8 +189,8 @@ function getServiceCat2Data(cat1, cat2) {
     `&contentTypeId=${CONTENT_TYPE_ID}&cat1=${cat1}`;
   requestData(url, function (data) {
     printSelectOptions(data, "#serviceCat2", "serviceCat2");
-    if (cat2 != ""){
-      $("#serviceCat2 option").attr("selected", false); 
+    if (cat2 != "") {
+      $("#serviceCat2 option").attr("selected", false);
       $("#serviceCat2").val(cat2).attr("selected", true);
     }
   });
@@ -193,8 +202,8 @@ function getServiceCat3Data(cat1, cat2, cat3) {
     `&contentTypeId=${CONTENT_TYPE_ID}&cat1=${cat1}&cat2=${cat2}`;
   requestData(url, function (data) {
     printSelectOptions(data, "#serviceCat3", "serviceCat3");
-    if (cat3 != ""){
-      $("#serviceCat3 option").attr("selected", false); 
+    if (cat3 != "") {
+      $("#serviceCat3 option").attr("selected", false);
       $("#serviceCat3").val(cat3).attr("selected", true);
     }
   });
@@ -205,18 +214,19 @@ function getAreaCat1Data(areaCode) {
   let url = AREA_CODE_URL + REQUIRED_PARMAS + `&numOfRows=50`;
   requestData(url, function (data) {
     printSelectOptions(data, "#areaCode", "areaCat1");
-    if (areaCode != ""){
-      $("#areaCode option").attr("selected", false); 
+    if (areaCode != "") {
+      $("#areaCode option").attr("selected", false);
       $("#areaCode").val(areaCode).attr("selected", true);
     }
   });
 }
 function getAreaCat2Data(areaCode, sigunguCode) {
-  let url = AREA_CODE_URL + REQUIRED_PARMAS + `&areaCode=${areaCode}&numOfRows=100`;
+  let url =
+    AREA_CODE_URL + REQUIRED_PARMAS + `&areaCode=${areaCode}&numOfRows=100`;
   requestData(url, function (data) {
     printSelectOptions(data, "#sigunguCode", "areaCat2");
-    if (sigunguCode != ""){
-      $("#sigunguCode option").attr("selected", false); 
+    if (sigunguCode != "") {
+      $("#sigunguCode option").attr("selected", false);
       $("#sigunguCode").val(sigunguCode).attr("selected", true);
     }
   });
@@ -292,8 +302,8 @@ function goDetailPage(card) {
   );
   let DetailUrl = makeSearchUrl(
     SERVICE_URL +
-    DETAIL_PAGE_URL +
-    `?contentid=${card.id}&pageNo=${currentPage}`,
+      DETAIL_PAGE_URL +
+      `?contentid=${card.id}&pageNo=${currentPage}`,
     params
   );
   // 현재 상태를 히스토리에 저장 (상세페이지에서 뒤로 가기 시 ListUrl로 이동하도록 설정)
@@ -302,4 +312,3 @@ function goDetailPage(card) {
   // 상세 페이지로 이동
   window.location.href = DetailUrl.toString();
 }
-
